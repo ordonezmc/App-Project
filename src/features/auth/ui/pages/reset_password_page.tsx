@@ -21,24 +21,20 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import type { RootStackParamList } from "../../../../core/navigation/app_navigator";
 
-type RegisterErrors = {
-  fullName?: string;
-  email?: string;
+type ResetPasswordErrors = {
   password?: string;
   confirmPassword?: string;
 };
 
-export function RegisterPage() {
-  const [fullName, setFullName] = useState("");
-  const [email, setEmail] = useState("");
+export function ResetPasswordPage() {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const [errors, setErrors] = useState<RegisterErrors>({});
-  const [hasSubmitted, setHasSubmitted] = useState(false);
-
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+
+  const [errors, setErrors] = useState<ResetPasswordErrors>({});
+  const [hasSubmitted, setHasSubmitted] = useState(false);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -50,40 +46,19 @@ export function RegisterPage() {
   });
 
   const validateForm = (
-    currentFullName: string,
-    currentEmail: string,
     currentPassword: string,
     currentConfirmPassword: string
-  ): RegisterErrors => {
-    const newErrors: RegisterErrors = {};
-
-    const cleanFullName = currentFullName.trim();
-    const cleanEmail = currentEmail.trim();
-
-    if (!cleanFullName) {
-      newErrors.fullName = "El nombre completo es obligatorio";
-    } else if (cleanFullName.length < 3) {
-      newErrors.fullName = "El nombre debe tener mínimo 3 caracteres";
-    }
-
-    if (!cleanEmail) {
-      newErrors.email = "El correo electrónico es obligatorio";
-    } else {
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
-      if (!emailRegex.test(cleanEmail)) {
-        newErrors.email = "Ingresa un correo electrónico válido";
-      }
-    }
+  ): ResetPasswordErrors => {
+    const newErrors: ResetPasswordErrors = {};
 
     if (!currentPassword.trim()) {
-      newErrors.password = "La contraseña es obligatoria";
+      newErrors.password = "La nueva contraseña es obligatoria";
     } else if (currentPassword.length < 6) {
       newErrors.password = "La contraseña debe tener mínimo 6 caracteres";
     }
 
     if (!currentConfirmPassword.trim()) {
-      newErrors.confirmPassword = "Confirma tu contraseña";
+      newErrors.confirmPassword = "Confirma tu nueva contraseña";
     } else if (currentConfirmPassword !== currentPassword) {
       newErrors.confirmPassword = "Las contraseñas no coinciden";
     }
@@ -91,29 +66,11 @@ export function RegisterPage() {
     return newErrors;
   };
 
-  const handleFullNameChange = (value: string) => {
-    const cleanValue = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, "");
-    setFullName(cleanValue);
-
-    if (hasSubmitted) {
-      setErrors(validateForm(cleanValue, email, password, confirmPassword));
-    }
-  };
-
-  const handleEmailChange = (value: string) => {
-    const cleanValue = value.replace(/\s/g, "").toLowerCase();
-    setEmail(cleanValue);
-
-    if (hasSubmitted) {
-      setErrors(validateForm(fullName, cleanValue, password, confirmPassword));
-    }
-  };
-
   const handlePasswordChange = (value: string) => {
     setPassword(value);
 
     if (hasSubmitted) {
-      setErrors(validateForm(fullName, email, value, confirmPassword));
+      setErrors(validateForm(value, confirmPassword));
     }
   };
 
@@ -121,29 +78,23 @@ export function RegisterPage() {
     setConfirmPassword(value);
 
     if (hasSubmitted) {
-      setErrors(validateForm(fullName, email, password, value));
+      setErrors(validateForm(password, value));
     }
   };
 
-  const handleRegister = () => {
+  const handleSavePassword = () => {
     setHasSubmitted(true);
 
-    const validationErrors = validateForm(
-      fullName,
-      email,
-      password,
-      confirmPassword
-    );
-
+    const validationErrors = validateForm(password, confirmPassword);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
 
-    navigation.navigate("VerificationCode", {
-      email,
-      flow: "register",
+    navigation.reset({
+      index: 0,
+      routes: [{ name: "Login" }],
     });
   };
 
@@ -162,6 +113,13 @@ export function RegisterPage() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.container}>
+            <View style={styles.logoHeader}>
+              <View style={styles.logoContainer}>
+                <Text style={styles.logoGreen}>Bana</Text>
+                <Text style={styles.logoYellow}>Eye</Text>
+              </View>
+            </View>
+
             <Image
               source={require("../../../../../assets/images/fondo.png")}
               style={styles.headerImage}
@@ -169,61 +127,13 @@ export function RegisterPage() {
             />
 
             <View style={styles.card}>
-              <Text style={styles.title}>Regístrate</Text>
+              <Text style={styles.title}>Nueva contraseña</Text>
 
               <Text style={styles.subtitle}>
-                Crea una cuenta para comenzar{"\n"}y monitorear tus cultivos
+                Crea una nueva contraseña para recuperar el acceso a tu cuenta.
               </Text>
 
               <View style={styles.form}>
-                <View
-                  style={[
-                    styles.inputContainer,
-                    errors.fullName ? styles.inputError : null,
-                  ]}
-                >
-                  <Ionicons name="person" size={18} color={COLORS.green} />
-
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Nombre completo"
-                    placeholderTextColor={COLORS.gray}
-                    value={fullName}
-                    onChangeText={handleFullNameChange}
-                    autoCapitalize="words"
-                    maxLength={60}
-                  />
-                </View>
-
-                {errors.fullName ? (
-                  <Text style={styles.errorText}>{errors.fullName}</Text>
-                ) : null}
-
-                <View
-                  style={[
-                    styles.inputContainer,
-                    errors.email ? styles.inputError : null,
-                  ]}
-                >
-                  <Ionicons name="mail" size={18} color={COLORS.green} />
-
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Correo electrónico"
-                    placeholderTextColor={COLORS.gray}
-                    value={email}
-                    onChangeText={handleEmailChange}
-                    keyboardType="email-address"
-                    autoCapitalize="none"
-                    autoCorrect={false}
-                    maxLength={80}
-                  />
-                </View>
-
-                {errors.email ? (
-                  <Text style={styles.errorText}>{errors.email}</Text>
-                ) : null}
-
                 <View
                   style={[
                     styles.inputContainer,
@@ -238,7 +148,7 @@ export function RegisterPage() {
 
                   <TextInput
                     style={styles.input}
-                    placeholder="Contraseña"
+                    placeholder="Nueva contraseña"
                     placeholderTextColor={COLORS.gray}
                     value={password}
                     onChangeText={handlePasswordChange}
@@ -247,8 +157,8 @@ export function RegisterPage() {
                   />
 
                   <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
                     activeOpacity={0.7}
+                    onPress={() => setShowPassword(!showPassword)}
                   >
                     <Ionicons
                       name={showPassword ? "eye-outline" : "eye-off-outline"}
@@ -285,10 +195,10 @@ export function RegisterPage() {
                   />
 
                   <TouchableOpacity
+                    activeOpacity={0.7}
                     onPress={() =>
                       setShowConfirmPassword(!showConfirmPassword)
                     }
-                    activeOpacity={0.7}
                   >
                     <Ionicons
                       name={
@@ -307,23 +217,12 @@ export function RegisterPage() {
                 ) : null}
 
                 <TouchableOpacity
-                  style={styles.registerButton}
+                  style={styles.saveButton}
                   activeOpacity={0.8}
-                  onPress={handleRegister}
+                  onPress={handleSavePassword}
                 >
-                  <Text style={styles.registerButtonText}>Crear cuenta</Text>
+                  <Text style={styles.saveButtonText}>Guardar contraseña</Text>
                 </TouchableOpacity>
-
-                <View style={styles.loginContainer}>
-                  <Text style={styles.loginText}>¿Ya tienes cuenta? </Text>
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => navigation.navigate("Login")}
-                  >
-                    <Text style={styles.loginLink}>Inicia sesión</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
             </View>
           </View>
@@ -338,6 +237,7 @@ const COLORS = {
   background: "#FFFFF1",
   gray: "#959595",
   black: "#000000",
+  pink: "#E4568B",
   yellow: "#F6C94D",
   darkBackground: "#202020",
   error: "#C94C4C",
@@ -360,53 +260,80 @@ const styles = StyleSheet.create({
   container: {
     width: "88%",
     maxWidth: 440,
+    minHeight: 760,
     backgroundColor: COLORS.background,
     overflow: "hidden",
   },
+  logoHeader: {
+    height: 75,
+    backgroundColor: COLORS.background,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  logoContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
+  logoGreen: {
+    fontFamily: "GravitasOne_400Regular",
+    fontSize: 30,
+    lineHeight: 38,
+    color: COLORS.green,
+    letterSpacing: -0.5,
+  },
+  logoYellow: {
+    fontFamily: "GravitasOne_400Regular",
+    fontSize: 30,
+    lineHeight: 38,
+    color: COLORS.yellow,
+    letterSpacing: -0.5,
+  },
   headerImage: {
     width: "100%",
-    height: 245,
+    height: 115,
   },
   card: {
-    marginTop: -42,
+    marginTop: -28,
     backgroundColor: COLORS.background,
     borderTopLeftRadius: 34,
     borderTopRightRadius: 34,
-    paddingHorizontal: 46,
-    paddingTop: 50,
-    paddingBottom: 44,
+    paddingHorizontal: 44,
+    paddingTop: 58,
+    paddingBottom: 50,
     alignItems: "center",
-    minHeight: 620,
+    minHeight: 570,
   },
   title: {
     fontFamily: "MaidenOrange_400Regular",
     fontSize: 40,
-    lineHeight: 42,
+    lineHeight: 43,
     color: COLORS.green,
     textAlign: "center",
-    marginBottom: 12,
+    marginBottom: 22,
   },
   subtitle: {
     fontFamily: "MaidenOrange_400Regular",
-    fontSize: 15,
-    lineHeight: 17,
+    fontSize: 16,
+    lineHeight: 19,
     color: COLORS.gray,
     textAlign: "center",
-    marginBottom: 42,
+    marginBottom: 44,
   },
   form: {
     width: "100%",
+    alignItems: "center",
   },
   inputContainer: {
-    height: 49,
+    width: "100%",
+    height: 52,
     backgroundColor: COLORS.background,
-    borderRadius: 9,
+    borderRadius: 10,
     paddingHorizontal: 13,
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
     borderWidth: 1,
     borderColor: "rgba(149, 149, 149, 0.12)",
+    marginBottom: 8,
   },
   inputError: {
     borderColor: COLORS.error,
@@ -420,42 +347,24 @@ const styles = StyleSheet.create({
     lineHeight: 21,
   },
   errorText: {
+    alignSelf: "flex-start",
     fontFamily: "MaidenOrange_400Regular",
     color: COLORS.error,
     fontSize: 13,
     lineHeight: 16,
-    marginBottom: 12,
+    marginBottom: 14,
     marginLeft: 4,
   },
-  registerButton: {
-    alignSelf: "center",
-    backgroundColor: COLORS.green,
-    paddingHorizontal: 22,
+  saveButton: {
+    backgroundColor: COLORS.pink,
+    paddingHorizontal: 24,
     paddingVertical: 10,
     borderRadius: 22,
-    marginTop: 18,
-    marginBottom: 20,
+    marginTop: 28,
   },
-  registerButtonText: {
+  saveButtonText: {
     fontFamily: "AlfaSlabOne_400Regular",
     color: COLORS.background,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  loginContainer: {
-    flexDirection: "row",
-    justifyContent: "center",
-    alignItems: "center",
-  },
-  loginText: {
-    fontFamily: "MaidenOrange_400Regular",
-    color: COLORS.gray,
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  loginLink: {
-    fontFamily: "MaidenOrange_400Regular",
-    color: COLORS.green,
     fontSize: 13,
     lineHeight: 18,
   },

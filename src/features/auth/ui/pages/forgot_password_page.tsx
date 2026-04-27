@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import {
-  Alert,
   Image,
   KeyboardAvoidingView,
   Platform,
@@ -22,18 +21,14 @@ import type { NativeStackNavigationProp } from "@react-navigation/native-stack";
 
 import type { RootStackParamList } from "../../../../core/navigation/app_navigator";
 
-type LoginErrors = {
+type ForgotPasswordErrors = {
   email?: string;
-  password?: string;
 };
 
-export function LoginPage() {
+export function ForgotPasswordPage() {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-
-  const [errors, setErrors] = useState<LoginErrors>({});
+  const [errors, setErrors] = useState<ForgotPasswordErrors>({});
   const [hasSubmitted, setHasSubmitted] = useState(false);
-  const [showPassword, setShowPassword] = useState(false);
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
@@ -44,11 +39,8 @@ export function LoginPage() {
     AlfaSlabOne_400Regular,
   });
 
-  const validateForm = (
-    currentEmail: string,
-    currentPassword: string
-  ): LoginErrors => {
-    const newErrors: LoginErrors = {};
+  const validateForm = (currentEmail: string): ForgotPasswordErrors => {
+    const newErrors: ForgotPasswordErrors = {};
     const cleanEmail = currentEmail.trim();
 
     if (!cleanEmail) {
@@ -61,12 +53,6 @@ export function LoginPage() {
       }
     }
 
-    if (!currentPassword.trim()) {
-      newErrors.password = "La contraseña es obligatoria";
-    } else if (currentPassword.length < 6) {
-      newErrors.password = "La contraseña debe tener mínimo 6 caracteres";
-    }
-
     return newErrors;
   };
 
@@ -75,32 +61,24 @@ export function LoginPage() {
     setEmail(cleanValue);
 
     if (hasSubmitted) {
-      setErrors(validateForm(cleanValue, password));
+      setErrors(validateForm(cleanValue));
     }
   };
 
-  const handlePasswordChange = (value: string) => {
-    setPassword(value);
-
-    if (hasSubmitted) {
-      setErrors(validateForm(email, value));
-    }
-  };
-
-  const handleLogin = () => {
+  const handleSendCode = () => {
     setHasSubmitted(true);
 
-    const validationErrors = validateForm(email, password);
+    const validationErrors = validateForm(email);
     setErrors(validationErrors);
 
     if (Object.keys(validationErrors).length > 0) {
       return;
     }
 
-    Alert.alert(
-      "Formulario válido",
-      "El inicio de sesión está listo para conectarse."
-    );
+    navigation.navigate("VerificationCode", {
+      email,
+      flow: "forgotPassword",
+    });
   };
 
   if (!fontsLoaded) {
@@ -118,6 +96,13 @@ export function LoginPage() {
           keyboardShouldPersistTaps="handled"
         >
           <View style={styles.container}>
+            <View style={styles.logoHeader}>
+              <View style={styles.logoContainer}>
+                <Text style={styles.logoGreen}>Bana</Text>
+                <Text style={styles.logoYellow}>Eye</Text>
+              </View>
+            </View>
+
             <Image
               source={require("../../../../../assets/images/fondo.png")}
               style={styles.headerImage}
@@ -125,13 +110,12 @@ export function LoginPage() {
             />
 
             <View style={styles.card}>
-              <View style={styles.logoContainer}>
-                <Text style={styles.logoGreen}>Bana</Text>
-                <Text style={styles.logoYellow}>Eye</Text>
-              </View>
+              <Text style={styles.title}>¿Olvidaste tu contraseña?</Text>
 
-              <Text style={styles.title}>Bienvenido</Text>
-              <Text style={styles.subtitle}>inicia sesión para continuar</Text>
+              <Text style={styles.subtitle}>
+                Ingresa tu correo electrónico y te enviaremos un código para que
+                puedas recuperar tu cuenta.
+              </Text>
 
               <View style={styles.form}>
                 <View
@@ -140,7 +124,7 @@ export function LoginPage() {
                     errors.email ? styles.inputError : null,
                   ]}
                 >
-                  <Ionicons name="mail" size={19} color={COLORS.green} />
+                  <Ionicons name="mail" size={18} color={COLORS.green} />
 
                   <TextInput
                     style={styles.input}
@@ -159,71 +143,34 @@ export function LoginPage() {
                   <Text style={styles.errorText}>{errors.email}</Text>
                 ) : null}
 
-                <View
-                  style={[
-                    styles.inputContainer,
-                    errors.password ? styles.inputError : null,
-                  ]}
+                <TouchableOpacity
+                  style={styles.sendButton}
+                  activeOpacity={0.8}
+                  onPress={handleSendCode}
                 >
                   <Ionicons
-                    name="lock-closed-outline"
-                    size={19}
-                    color={COLORS.green}
+                    name="log-in-outline"
+                    size={15}
+                    color={COLORS.background}
                   />
+                  <Text style={styles.sendButtonText}>Enviar código</Text>
+                </TouchableOpacity>
 
-                  <TextInput
-                    style={styles.input}
-                    placeholder="Contraseña"
-                    placeholderTextColor={COLORS.gray}
-                    value={password}
-                    onChangeText={handlePasswordChange}
-                    secureTextEntry={!showPassword}
-                    maxLength={30}
-                  />
-
-                  <TouchableOpacity
-                    onPress={() => setShowPassword(!showPassword)}
-                    activeOpacity={0.7}
-                  >
-                    <Ionicons
-                      name={showPassword ? "eye-outline" : "eye-off-outline"}
-                      size={19}
-                      color={COLORS.green}
-                    />
-                  </TouchableOpacity>
+                <View style={styles.dividerContainer}>
+                  <View style={styles.divider} />
+                  <Text style={styles.dividerText}>o</Text>
+                  <View style={styles.divider} />
                 </View>
 
-                {errors.password ? (
-                  <Text style={styles.errorText}>{errors.password}</Text>
-                ) : null}
-
                 <TouchableOpacity
-                  activeOpacity={0.7}
-                  onPress={() => navigation.navigate("ForgotPassword")}
+                  style={styles.backButton}
+                  activeOpacity={0.8}
+                  onPress={() => navigation.navigate("Login")}
                 >
-                  <Text style={styles.forgotText}>
-                    ¿Olvidaste tu contraseña?
+                  <Text style={styles.backButtonText}>
+                    Volver al inicio de sesión
                   </Text>
                 </TouchableOpacity>
-
-                <TouchableOpacity
-                  style={styles.loginButton}
-                  activeOpacity={0.8}
-                  onPress={handleLogin}
-                >
-                  <Text style={styles.loginButtonText}>Iniciar sesión</Text>
-                </TouchableOpacity>
-
-                <View style={styles.registerContainer}>
-                  <Text style={styles.registerText}>¿No tienes cuenta? </Text>
-
-                  <TouchableOpacity
-                    activeOpacity={0.7}
-                    onPress={() => navigation.navigate("Register")}
-                  >
-                    <Text style={styles.registerLink}>Regístrate</Text>
-                  </TouchableOpacity>
-                </View>
               </View>
             </View>
           </View>
@@ -238,6 +185,7 @@ const COLORS = {
   background: "#FFFFF1",
   gray: "#959595",
   black: "#000000",
+  pink: "#E4568B",
   yellow: "#F6C94D",
   darkBackground: "#202020",
   error: "#C94C4C",
@@ -255,75 +203,85 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     justifyContent: "center",
     alignItems: "center",
-    paddingVertical: 30,
+    paddingVertical: 24,
   },
   container: {
     width: "88%",
-    maxWidth: 390,
+    maxWidth: 440,
+    minHeight: 760,
     backgroundColor: COLORS.background,
     overflow: "hidden",
   },
-  headerImage: {
-    width: "100%",
-    height: 270,
-  },
-  card: {
-    marginTop: -45,
+  logoHeader: {
+    height: 75,
     backgroundColor: COLORS.background,
-    borderTopLeftRadius: 36,
-    borderTopRightRadius: 36,
-    paddingHorizontal: 34,
-    paddingTop: 38,
-    paddingBottom: 45,
+    justifyContent: "center",
     alignItems: "center",
   },
   logoContainer: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 16,
   },
   logoGreen: {
     fontFamily: "GravitasOne_400Regular",
-    fontSize: 48,
-    lineHeight: 58,
-    letterSpacing: -0.96,
+    fontSize: 30,
+    lineHeight: 38,
     color: COLORS.green,
+    letterSpacing: -0.5,
   },
   logoYellow: {
     fontFamily: "GravitasOne_400Regular",
-    fontSize: 48,
-    lineHeight: 58,
-    letterSpacing: -0.96,
+    fontSize: 30,
+    lineHeight: 38,
     color: COLORS.yellow,
+    letterSpacing: -0.5,
+  },
+  headerImage: {
+    width: "100%",
+    height: 115,
+  },
+  card: {
+    marginTop: -28,
+    backgroundColor: COLORS.background,
+    borderTopLeftRadius: 34,
+    borderTopRightRadius: 34,
+    paddingHorizontal: 44,
+    paddingTop: 56,
+    paddingBottom: 50,
+    alignItems: "center",
+    minHeight: 570,
   },
   title: {
     fontFamily: "MaidenOrange_400Regular",
-    fontSize: 40,
+    fontSize: 38,
     lineHeight: 42,
-    letterSpacing: 0.5,
     color: COLORS.green,
-    marginBottom: 2,
+    textAlign: "center",
+    marginBottom: 22,
   },
   subtitle: {
     fontFamily: "MaidenOrange_400Regular",
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: 16,
+    lineHeight: 19,
     color: COLORS.gray,
-    marginBottom: 34,
+    textAlign: "center",
+    marginBottom: 44,
   },
   form: {
     width: "100%",
+    alignItems: "center",
   },
   inputContainer: {
+    width: "100%",
     height: 52,
     backgroundColor: COLORS.background,
     borderRadius: 10,
-    paddingHorizontal: 14,
+    paddingHorizontal: 13,
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 8,
     borderWidth: 1,
     borderColor: "rgba(149, 149, 149, 0.12)",
+    marginBottom: 8,
   },
   inputError: {
     borderColor: COLORS.error,
@@ -333,55 +291,64 @@ const styles = StyleSheet.create({
     marginLeft: 8,
     color: COLORS.black,
     fontFamily: "MaidenOrange_400Regular",
-    fontSize: 18,
-    lineHeight: 22,
+    fontSize: 17,
+    lineHeight: 21,
   },
   errorText: {
+    alignSelf: "flex-start",
     fontFamily: "MaidenOrange_400Regular",
     color: COLORS.error,
-    fontSize: 14,
-    lineHeight: 17,
-    marginBottom: 13,
+    fontSize: 13,
+    lineHeight: 16,
+    marginBottom: 16,
     marginLeft: 4,
   },
-  forgotText: {
-    fontFamily: "MaidenOrange_400Regular",
-    color: COLORS.gray,
-    fontSize: 14,
-    lineHeight: 18,
-    marginTop: 4,
-    marginBottom: 36,
-  },
-  loginButton: {
-    alignSelf: "center",
-    backgroundColor: COLORS.green,
-    paddingHorizontal: 24,
+  sendButton: {
+    flexDirection: "row",
+    alignItems: "center",
+    backgroundColor: COLORS.pink,
+    paddingHorizontal: 22,
     paddingVertical: 10,
     borderRadius: 22,
-    marginBottom: 18,
+    marginTop: 20,
+    marginBottom: 42,
   },
-  loginButtonText: {
+  sendButtonText: {
     fontFamily: "AlfaSlabOne_400Regular",
     color: COLORS.background,
-    fontSize: 14,
-    lineHeight: 20,
-    letterSpacing: 0.1,
+    fontSize: 13,
+    lineHeight: 18,
+    marginLeft: 6,
   },
-  registerContainer: {
+  dividerContainer: {
+    width: "100%",
     flexDirection: "row",
-    justifyContent: "center",
     alignItems: "center",
+    marginBottom: 42,
   },
-  registerText: {
+  divider: {
+    flex: 1,
+    height: 1,
+    backgroundColor: COLORS.green,
+    opacity: 0.8,
+  },
+  dividerText: {
     fontFamily: "MaidenOrange_400Regular",
     color: COLORS.gray,
     fontSize: 14,
-    lineHeight: 18,
+    marginHorizontal: 22,
   },
-  registerLink: {
-    fontFamily: "MaidenOrange_400Regular",
-    color: COLORS.green,
-    fontSize: 14,
-    lineHeight: 18,
+  backButton: {
+    borderWidth: 1.5,
+    borderColor: COLORS.pink,
+    paddingHorizontal: 22,
+    paddingVertical: 9,
+    borderRadius: 22,
+  },
+  backButtonText: {
+    fontFamily: "AlfaSlabOne_400Regular",
+    color: COLORS.pink,
+    fontSize: 12,
+    lineHeight: 17,
   },
 });
