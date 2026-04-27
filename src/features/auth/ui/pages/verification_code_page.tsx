@@ -128,7 +128,7 @@ export function VerificationCodePage() {
             </View>
 
             <Image
-              source={require("../../../../../assets/images/fondo.png")}
+              source={require("../../../../../assets/images/fondo2.png")}
               style={styles.headerImage}
               resizeMode="cover"
             />
