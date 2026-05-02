@@ -10,25 +10,25 @@ datasource db {
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model alerta {
   id      String    @id @db.Uuid
-  lote_id String?   @db.Uuid
+  lote_id String    @db.Uuid
   tipo    String?   @db.VarChar(30)
   nivel   String?   @db.VarChar(20)
   mensaje String?
   leida   Boolean?  @default(false)
   fecha   DateTime? @default(now()) @db.Timestamp(6)
-  lote    lote?     @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lote    lote      @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model bitacora {
   id          String    @id @db.Uuid
-  lote_id     String?   @db.Uuid
+  lote_id     String    @db.Uuid
   imagen_url  String?
   titulo      String?
   description String?
   fecha       DateTime? @db.Date
   created_at  DateTime? @default(now()) @db.Timestamp(6)
-  lote        lote?     @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lote        lote      @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -83,14 +83,20 @@ model monitoreo {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model registrar_etapa {
-  id         String    @id @db.Uuid
-  lote_id    String?   @db.Uuid
-  etapa_id   Int?
-  fecha      DateTime? @db.Date
-  datos      Json?
-  created_at DateTime? @default(now()) @db.Timestamp(6)
-  etapa      etapa?    @relation(fields: [etapa_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  lote       lote?     @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  id             String           @id @db.Uuid
+  lote_id        String?          @db.Uuid
+  etapa_id       Int?
+  fecha          DateTime?        @db.Date
+  datos          Json?
+  created_at     DateTime?        @default(now()) @db.Timestamp(6)
+  cosecha        cosecha[]
+  desarrollo     desarrollo[]
+  floracion      floracion[]
+  fructificacion fructificacion[]
+  preparacion    preparacion[]
+  etapa          etapa?           @relation(fields: [etapa_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lote           lote?            @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  siembra        siembra[]
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
@@ -113,4 +119,55 @@ model usuario {
   foto_url   String?
   created_at DateTime? @default(now()) @db.Timestamp(6)
   lote       lote[]
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model cosecha {
+  id              String           @id @db.Uuid
+  registro_id     String?          @db.Uuid
+  numero_plantas  Int?
+  produccion      Float?
+  registrar_etapa registrar_etapa? @relation(fields: [registro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model desarrollo {
+  id                      String           @id @db.Uuid
+  registro_id             String?          @db.Uuid
+  numero_plantas          Int?
+  numero_plantas_enfermas Int?
+  registrar_etapa         registrar_etapa? @relation(fields: [registro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model floracion {
+  id              String           @id @db.Uuid
+  registro_id     String?          @db.Uuid
+  numero_plantas  Int?
+  registrar_etapa registrar_etapa? @relation(fields: [registro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model fructificacion {
+  id              String           @id @db.Uuid
+  registro_id     String?          @db.Uuid
+  numero_plantas  Int?
+  registrar_etapa registrar_etapa? @relation(fields: [registro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model preparacion {
+  id              String           @id @db.Uuid
+  registro_id     String?          @db.Uuid
+  fertilizante    Float?
+  registrar_etapa registrar_etapa? @relation(fields: [registro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model siembra {
+  id               String           @id @db.Uuid
+  registro_id      String?          @db.Uuid
+  numero_plantas   Int?
+  frecuencia_riego Int?
+  registrar_etapa  registrar_etapa? @relation(fields: [registro_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
