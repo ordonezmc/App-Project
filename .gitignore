@@ -1,37 +1,37 @@
 # Dependencies
 node_modules/
-backend/node_modules/
-frontend/node_modules/
+server/node_modules/
+mobile/node_modules/
 
-#Backend
-backend/dist/
-backend/build/
-backend/coverage/
-backend/.nyc_output/
-backend/generated/prisma/
+#server
+server/dist/
+server/build/
+server/coverage/
+server/.nyc_output/
+server/generated/prisma/
 
-#Frontend
-frontend/.expo/
-frontend/dist/
-frontend/web-build/
-frontend/expo-env.d.ts
-frontend/app-example/
-frontend/.metro-health-check*
+#mobile
+mobile/.expo/
+mobile/dist/
+mobile/web-build/
+mobile/expo-env.d.ts
+mobile/app-example/
+mobile/.metro-health-check*
 
 #Native
-frontend/*.orig.*
-frontend/*.jks
-frontend/*.p8
-frontend/*.p12
-frontend/*.key
-frontend/*.mobileprovision
+mobile/*.orig.*
+mobile/*.jks
+mobile/*.p8
+mobile/*.p12
+mobile/*.key
+mobile/*.mobileprovision
 
 #env
 .env
 .env.local
 .env*.local
-backend/.env
-frontend/.env
+server/.env
+mobile/.env
 
 #logs
 logs
@@ -41,8 +41,8 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 pnpm-debug.log*
-backend/npm-debug.*
-frontend/npm-debug.*
+server/npm-debug.*
+mobile/npm-debug.*
 
 
 .DS_Store
