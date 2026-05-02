@@ -20,12 +20,12 @@ model alerta {
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model bitacora {
-  id          String    @id @db.Uuid
+  id          String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
   lote_id     String?   @db.Uuid
   imagen_url  String?
   titulo      String
   description String
-  fecha       DateTime? @db.Date
+  fecha       DateTime  @db.Date
   created_at  DateTime? @default(now()) @db.Timestamp(6)
   lote        lote?     @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
