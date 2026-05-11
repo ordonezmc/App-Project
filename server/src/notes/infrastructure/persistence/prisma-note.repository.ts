@@ -30,6 +30,13 @@ export class PrismaNoteRepository implements INoteRepository {
     return bitacoras.map(this.toDomain);
   }
 
+  async findById(id: string): Promise<Note> {
+    const bitacora = await this.prisma.bitacora.findUnique({
+      where: { id: id },
+    });
+    return this.toDomain(bitacora);
+  }
+
   async update(id: string, note: Partial<Note>): Promise<Note> {
     const updatedNote = await this.prisma.bitacora.update({
       where: {
