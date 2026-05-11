@@ -48,6 +48,14 @@ export class PrismaNoteRepository implements INoteRepository {
     return this.toDomain(updatedNote);
   }
 
+  async delete(id: string) {
+    await this.prisma.bitacora.delete({
+      where: {
+        id: id,
+      },
+    });
+  }
+
   private toDomain(prismaNote: any): Note {
     return new Note(
       prismaNote.id,

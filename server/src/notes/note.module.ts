@@ -6,6 +6,7 @@ import { PrismaService } from 'src/prisma/prisma.service';
 import { INoteRepository } from './domain/repositories/note.repository.interface';
 import { UpdateNoteUseCase } from './application/use-cases/update-note.use-case';
 import { GetNotesUseCase } from './application/use-cases/get-notes.use-case';
+import { DeleteNoteUseCase } from './application/use-cases/delete-note.use-case';
 
 @Module({
   controllers: [NoteController],
@@ -32,6 +33,12 @@ import { GetNotesUseCase } from './application/use-cases/get-notes.use-case';
       inject: ['INoteRepository'],
       useFactory: (repository: INoteRepository) =>
         new UpdateNoteUseCase(repository),
+    },
+    {
+      provide: DeleteNoteUseCase,
+      inject: ['INoteRepository'],
+      useFactory: (repository: INoteRepository) =>
+        new DeleteNoteUseCase(repository),
     },
   ],
 })
