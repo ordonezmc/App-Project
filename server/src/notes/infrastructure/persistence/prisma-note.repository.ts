@@ -28,4 +28,29 @@ export class PrismaNoteRepository implements INoteRepository {
       createdNote.created_at ?? undefined,
     );
   }
+
+  async update(id: string, note: Partial<Note>): Promise<Note> {
+    const updatedNote = await this.prisma.bitacora.update({
+      where: {
+        id: id,
+      },
+      data: {
+        lote_id: note.lote_id,
+        titulo: note.titulo,
+        description: note.description,
+        imagen_url: note.imagen_url,
+        fecha: note.fecha,
+      },
+    });
+
+    return new Note(
+      updatedNote.id,
+      updatedNote.lote_id,
+      updatedNote.titulo,
+      updatedNote.description,
+      updatedNote.imagen_url,
+      updatedNote.fecha,
+      updatedNote.created_at ?? undefined,
+    );
+  }
 }
