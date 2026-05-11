@@ -28,4 +28,7 @@ export class CreateNoteDto {
   @Type(() => Date)
   @IsDate({ message: 'La fecha debe ser una fecha válida' })
   fecha!: Date;
+
+  @IsUUID()
+  usuario_id!: string;
 }

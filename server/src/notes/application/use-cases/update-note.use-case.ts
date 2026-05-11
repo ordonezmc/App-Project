@@ -11,6 +11,7 @@ export class UpdateNoteUseCase {
       description: data.description,
       imagen_url: data.imagen_url,
       fecha: data.fecha,
+      usuario_id: data.usuario_id,
     };
     return await this.noteRepository.update(id, updatedNote);
   }
