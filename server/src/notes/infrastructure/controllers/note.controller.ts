@@ -6,6 +6,7 @@ import {
   Patch,
   Req,
   Delete,
+  UseGuards
 } from '@nestjs/common';
 import { Param } from '@nestjs/common/decorators';
 import { CreateNoteUseCase } from '../../application/use-cases/create-note.use-case';
@@ -15,7 +16,9 @@ import { UpdateNoteUseCase } from '../../application/use-cases/update-note.use-c
 import { GetNotesUseCase } from '../../application/use-cases/get-notes.use-case';
 import { GetNoteUseCase } from 'src/notes/application/use-cases/get-note.use-case';
 import { DeleteNoteUseCase } from 'src/notes/application/use-cases/delete-note.use-case';
+import { JwtGuard } from 'src/auth/infrastructure/guards/jwt.guard';
 
+@UseGuards(JwtGuard)
 @Controller('notes')
 export class NoteController {
   constructor(
