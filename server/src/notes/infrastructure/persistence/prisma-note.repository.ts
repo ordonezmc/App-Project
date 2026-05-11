@@ -19,25 +19,16 @@ export class PrismaNoteRepository implements INoteRepository {
       },
     });
 
-    return new Note(
-      createdNote.id,
-      createdNote.lote_id,
-      createdNote.titulo,
-      createdNote.description,
-      createdNote.imagen_url,
-      createdNote.fecha,
-      createdNote.usuario_id,
-      createdNote.created_at ?? undefined,
-    );
+    return this.toDomain(createdNote);
   }
 
-  // async findAllByUser(userId: string): Promise<Note[]> {
-  //   const bitacoras = await this.prisma.bitacora.findMany({
-  //     where: { usuario_id: userId },
-  //   });
+  async findAllByUser(userId: string): Promise<Note[]> {
+    const bitacoras = await this.prisma.bitacora.findMany({
+      where: { usuario_id: userId },
+    });
 
-  //   return bitacoras.map(this.toDomain);
-  // }
+    return bitacoras.map(this.toDomain);
+  }
 
   async update(id: string, note: Partial<Note>): Promise<Note> {
     const updatedNote = await this.prisma.bitacora.update({
@@ -54,15 +45,18 @@ export class PrismaNoteRepository implements INoteRepository {
       },
     });
 
+    return this.toDomain(updatedNote);
+  }
+
+  private toDomain(prismaNote: any): Note {
     return new Note(
-      updatedNote.id,
-      updatedNote.lote_id,
-      updatedNote.titulo,
-      updatedNote.description,
-      updatedNote.imagen_url,
-      updatedNote.fecha,
-      updatedNote.usuario_id,
-      updatedNote.created_at ?? undefined,
+      prismaNote.id,
+      prismaNote.lote_id,
+      prismaNote.titulo,
+      prismaNote.description,
+      prismaNote.imagen_url,
+      prismaNote.fecha,
+      prismaNote.created_at,
     );
   }
 }
