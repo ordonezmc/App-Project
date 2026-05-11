@@ -6,6 +6,7 @@ export class Note {
     public readonly description: string,
     public readonly imagen_url: string | null,
     public readonly fecha: Date,
+    public readonly usuario_id: string,
     public readonly created_at?: Date,
   ) {}
 }

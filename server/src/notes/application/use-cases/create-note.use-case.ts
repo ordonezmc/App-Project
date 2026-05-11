@@ -10,6 +10,7 @@ export class CreateNoteUseCase {
     description: string;
     imagen_url?: string;
     fecha: Date;
+    usuario_id: string;
   }): Promise<Note> {
     const newNote = new Note(
       '', // El ID lo generará la DB
@@ -18,6 +19,7 @@ export class CreateNoteUseCase {
       data.description,
       data.imagen_url ?? null,
       new Date(),
+      data.usuario_id,
     );
 
     // Guardar la nota en el repositorio
