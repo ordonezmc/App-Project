@@ -24,6 +24,17 @@ export class PrismaLoteRepository implements LoteRepository {
     return this.toDomain(created);
   }
 
+  async findById(id: string): Promise<Lot | null> {
+    const lote = await this.prisma.lote.findUnique({
+      where: { id },
+    });
+
+    if (!lote) {
+      return null;
+    }
+    return this.toDomain(lote);
+  }
+
   async findAllByUser(userId: string): Promise<Lot[]> {
     const lotes = await this.prisma.lote.findMany({
       where: { usuario_id: userId },
@@ -39,6 +50,12 @@ export class PrismaLoteRepository implements LoteRepository {
     });
 
     return this.toDomain(updated);
+  }
+
+  async delete(id: string): Promise<void> {
+    await this.prisma.lote.delete({
+      where: { id },
+    });
   }
 
   private toDomain(lote: any): Lot {
