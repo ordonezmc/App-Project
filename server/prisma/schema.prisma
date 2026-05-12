@@ -68,6 +68,19 @@ model lote {
 }
 
 /// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
+model registro_etapa {
+  id            String    @id @db.Uuid
+  lote_id       String?   @db.Uuid
+  etapa_id      Int?
+  tipo_registro String?   @db.VarChar(50)
+  datos         Json?
+  fecha         DateTime? @db.Date
+  created_at    DateTime? @default(now()) @db.Timestamp(6)
+  etapa         etapa?    @relation(fields: [etapa_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  lote          lote?     @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
+
+/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
 model sync_queue {
   id         String    @id @db.Uuid
   entidad    String?   @db.VarChar(50)
@@ -88,17 +101,4 @@ model usuario {
   created_at    DateTime?  @default(now()) @db.Timestamp(6)
   bitacora      bitacora[]
   lote          lote[]
-}
-
-/// This model contains row level security and requires additional setup for migrations. Visit https://pris.ly/d/row-level-security for more info.
-model registro_etapa {
-  id            String    @id @db.Uuid
-  lote_id       String?   @db.Uuid
-  etapa_id      Int?
-  tipo_registro String?   @db.VarChar(50)
-  datos         Json?
-  fecha         DateTime? @db.Date
-  created_at    DateTime? @default(now()) @db.Timestamp(6)
-  etapa         etapa?    @relation(fields: [etapa_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
-  lote          lote?     @relation(fields: [lote_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
 }
