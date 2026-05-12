@@ -45,7 +45,7 @@ export class LoteController {
 
   @Get(':id')
   findOne(@Param('id') id: string) {
-    return this.deleteLote.execute(id);
+    return this.getLote.execute(id);
   }
 
   @Patch(':id')
