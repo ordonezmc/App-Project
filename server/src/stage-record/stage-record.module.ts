@@ -4,8 +4,10 @@ import { PrismaStageRecordRepository } from './infrastructure/persistence/prisma
 import { CreateStageRecordUseCase } from './application/use-cases/create-stage-record.use-case';
 import { GetStageRecordsUseCase } from './application/use-cases/get-stage-records.use-case';
 import { UpdateStageRecordUseCase } from './application/use-cases/update-stage-record.use-case';
+import { PrismaModule } from 'src/prisma/prisma.module';
 
 @Module({
+  imports: [PrismaModule],
   controllers: [StageRecordController],
 
   providers: [

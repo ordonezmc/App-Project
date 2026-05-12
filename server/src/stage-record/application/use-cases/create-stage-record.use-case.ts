@@ -11,9 +11,8 @@ export class CreateStageRecordUseCase {
 
     const record = new StageRecord(
       uuid(),
-      data.loteId,
-      data.etapaId,
-      data.tipoRegistro,
+      data.lote_id,
+      data.etapa_id,
       data.datos,
       data.fecha
     );

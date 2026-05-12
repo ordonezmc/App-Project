@@ -15,7 +15,6 @@ export class PrismaStageRecordRepository implements StageRecordRepository {
         id: data.id,
         lote_id: data.lote_id,
         etapa_id: data.etapa_id,
-        tipo_registro: data.tipo_registro,
         datos: data.datos,
         fecha: data.fecha,
       },
@@ -43,7 +42,6 @@ export class PrismaStageRecordRepository implements StageRecordRepository {
       },
 
       data: {
-        tipo_registro: data.tipoRegistro,
         datos: data.datos,
         fecha: data.fecha,
       },

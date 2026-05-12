@@ -6,7 +6,6 @@ export class StageRecordMapper {
       raw.id,
       raw.lote_id,
       raw.etapa_id,
-      raw.tipo_registro,
       raw.datos,
       raw.fecha,
       raw.created_at,
