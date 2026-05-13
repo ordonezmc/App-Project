@@ -4,19 +4,19 @@ export class DensityRules {
   evaluate(hectareas: number, plantas: number): AgriculturalAlert | null {
     const densidad = plantas / hectareas;
 
-    if (densidad < 1000) {
+    if (densidad < 1600) {
       return {
         tipo: 'DENSIDAD',
         nivel: 'MEDIO',
-        mensaje: 'Muy pocas plantas por hectárea',
+        mensaje: 'Hay muy pocas plantas por hectárea',
       };
     }
 
-    if (densidad > 2500) {
+    if (densidad > 1800) {
       return {
         tipo: 'DENSIDAD',
-        nivel: 'ALTO',
-        mensaje: 'Demasiadas plantas por hectárea',
+        nivel: 'MEDIO',
+        mensaje: 'Hay muchas plantas por hectárea',
       };
     }
 
