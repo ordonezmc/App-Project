@@ -5,6 +5,7 @@ import { RegisterUseCase } from './application/use-cases/register.use-case';
 import { LoginUseCase } from './application/use-cases/login.use-case';
 import { JwtService } from './infrastructure/services/jwt.service';
 import {PrismaModule} from '../prisma/prisma.module'
+import { UpdateUserUseCase } from './application/use-cases/update-user.use-case';
 
 @Module({
   imports: [PrismaModule],
@@ -22,6 +23,12 @@ import {PrismaModule} from '../prisma/prisma.module'
       useFactory: (repo: PrismaUserRepository, jwt: JwtService) =>
         new LoginUseCase(repo, jwt),
       inject: [PrismaUserRepository, JwtService],
+    },
+     {
+      provide: UpdateUserUseCase,
+      inject: [PrismaUserRepository],
+      useFactory: (repository: PrismaUserRepository) =>
+        new UpdateUserUseCase(repository),
     },
   ],
 })
