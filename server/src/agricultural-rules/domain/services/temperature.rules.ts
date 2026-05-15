@@ -5,7 +5,7 @@ export class TemperatureRules {
     if (temperatura > 34) {
       return {
         tipo: 'TEMPERATURA',
-        nivel: 'ALTA',
+        nivel: 'ALTO',
         mensaje:
           'La temperatura es demasiado alta, el cultivo puede sufrir daños',
       };
@@ -22,7 +22,7 @@ export class TemperatureRules {
     if (temperatura < 16) {
       return {
         tipo: 'TEMPERATURA',
-        nivel: 'ALTA',
+        nivel: 'ALTO',
         mensaje:
           'La temperatura es demasiado baja, el cultivo puede sufrir daños',
       };

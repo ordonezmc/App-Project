@@ -3,6 +3,7 @@ import { CreateAlertUseCase } from '../../application/use-cases/create-alert.use
 import { GetAlertsUseCase } from '../../application/use-cases/get-alerts.use-case';
 import { GetLotAlertsUseCase } from '../../application/use-cases/get-lot-alerts.use-case';
 import { MarkAlertAsReadUseCase } from '../../application/use-cases/mark-alert-as-read.use-case';
+import { CreateAlertDTO } from '../dtos/create-alert.dto';
 
 @Controller('alerts')
 export class AlertController {
@@ -14,7 +15,7 @@ export class AlertController {
   ) {}
 
   @Post()
-  create(@Body() body: any) {
+  create(@Body() body: CreateAlertDTO) {
     return this.createUseCase.execute(body);
   }
 

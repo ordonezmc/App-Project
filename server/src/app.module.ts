@@ -6,6 +6,7 @@ import { NotesModule } from './notes/note.module';
 import { LoteModule } from './lots/lot.module';
 import { StageRecordModule } from './stage-record/stage-record.module';
 import { AlertModule } from './alert/alert.module';
+import { AgriculturalRulesModule } from './agricultural-rules/agricultural-rules.module';
 
 @Module({
   imports: [
@@ -14,6 +15,7 @@ import { AlertModule } from './alert/alert.module';
     LoteModule,
     StageRecordModule,
     AlertModule,
+    AgriculturalRulesModule,
   ],
   controllers: [AppController],
   providers: [AppService],

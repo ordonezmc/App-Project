@@ -28,7 +28,7 @@ export class EvaluateLotUseCase {
       alerts.push(densidad);
     }
 
-    const etapa = this.stageRules.evaluate(lote.fecha_inicio, lote.etapa);
+    const etapa = this.stageRules.evaluate(lote.fecha_inicio, lote.etapa_actual_id);
 
     if (etapa) {
       alerts.push(etapa);
