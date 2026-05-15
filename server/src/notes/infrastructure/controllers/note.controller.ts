@@ -52,8 +52,13 @@ export class NoteController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateNoteDto: UpdateNoteDto) {
-    return await this.updateNoteUseCase.execute(id, updateNoteDto);
+  @UseInterceptors(FileInterceptor('image'))
+  async update(
+    @Param('id') id: string,
+    @Body() updateNoteDto: UpdateNoteDto,
+    @UploadedFile() file: any,
+  ) {
+    return await this.updateNoteUseCase.execute(id, updateNoteDto, file);
   }
 
   @Delete(':id')

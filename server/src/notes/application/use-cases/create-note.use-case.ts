@@ -1,4 +1,4 @@
-import { IImageStorageService } from 'src/notes/domain/repositories/image.repository.interface';
+import { IImageStorageService } from 'src/shared/domain/repositories/image.repository.interface';
 import { Note } from '../../domain/entities/note.entity';
 import { INoteRepository } from '../../domain/repositories/note.repository.interface';
 import { CreateNoteDto } from 'src/notes/infrastructure/dtos/create-note.dto';
@@ -13,7 +13,7 @@ export class CreateNoteUseCase {
     let finalImageUrl = data.imagen_url || null;
 
     if (file) {
-      console.log('URL generada por Cloudinary:', finalImageUrl);
+      finalImageUrl = await this.fileStorage.uploadImage(file);
     }
     const newNote = new Note(
       '', // El ID lo generará la DB

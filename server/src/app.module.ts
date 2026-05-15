@@ -4,10 +4,17 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { NotesModule } from './notes/note.module';
 import { LoteModule } from './lots/lot.module';
-import {StageRecordModule} from "./stage-record/stage-record.module";
+import { StageRecordModule } from './stage-record/stage-record.module';
+import { SharedModule } from './shared/shared.module';
 
 @Module({
-  imports: [AuthModule, NotesModule, LoteModule, StageRecordModule],
+  imports: [
+    SharedModule,
+    AuthModule,
+    NotesModule,
+    LoteModule,
+    StageRecordModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

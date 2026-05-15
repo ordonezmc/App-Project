@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { v2 as cloudinary } from 'cloudinary';
-import { IImageStorageService } from '../../domain/repositories/image.repository.interface';
+import { IImageStorageService } from '../../../shared/domain/repositories/image.repository.interface';
 import 'dotenv/config';
 
 @Injectable()
