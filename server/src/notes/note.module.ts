@@ -40,9 +40,11 @@ import { IImageStorageService } from '../shared/domain/repositories/image.reposi
     },
     {
       provide: UpdateNoteUseCase,
-      inject: ['INoteRepository'],
-      useFactory: (repository: INoteRepository) =>
-        new UpdateNoteUseCase(repository),
+      inject: ['INoteRepository', 'IImageStorageService'],
+      useFactory: (
+        repository: INoteRepository,
+        storage: IImageStorageService,
+      ) => new UpdateNoteUseCase(repository, storage),
     },
     {
       provide: DeleteNoteUseCase,
