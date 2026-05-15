@@ -8,6 +8,8 @@ import { UpdateNoteUseCase } from './application/use-cases/update-note.use-case'
 import { GetNotesUseCase } from './application/use-cases/get-notes.use-case';
 import { GetNoteUseCase } from './application/use-cases/get-note.use-case';
 import { DeleteNoteUseCase } from './application/use-cases/delete-note.use-case';
+import { IImageStorageService } from './domain/repositories/image.repository.interface';
+import { CloudinaryStorageService } from './infrastructure/services/image-storage.service';
 
 @Module({
   controllers: [NoteController],
@@ -18,10 +20,16 @@ import { DeleteNoteUseCase } from './application/use-cases/delete-note.use-case'
       useClass: PrismaNoteRepository,
     },
     {
+      provide: 'IImageStorageService',
+      useClass: CloudinaryStorageService,
+    },
+    {
       provide: CreateNoteUseCase,
-      inject: ['INoteRepository'],
-      useFactory: (repository: INoteRepository) =>
-        new CreateNoteUseCase(repository),
+      inject: ['INoteRepository', 'IImageStorageService'],
+      useFactory: (   
+        repository: INoteRepository,
+        storage: IImageStorageService,
+      ) => new CreateNoteUseCase(repository, storage),
     },
     {
       provide: GetNotesUseCase,
