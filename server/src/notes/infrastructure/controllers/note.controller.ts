@@ -6,7 +6,9 @@ import {
   Patch,
   Req,
   Delete,
-  UseGuards
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { Param } from '@nestjs/common/decorators';
 import { CreateNoteUseCase } from '../../application/use-cases/create-note.use-case';
@@ -17,6 +19,7 @@ import { GetNotesUseCase } from '../../application/use-cases/get-notes.use-case'
 import { GetNoteUseCase } from 'src/notes/application/use-cases/get-note.use-case';
 import { DeleteNoteUseCase } from 'src/notes/application/use-cases/delete-note.use-case';
 import { JwtGuard } from 'src/auth/infrastructure/guards/jwt.guard';
+import { FileInterceptor } from '@nestjs/platform-express';
 
 @UseGuards(JwtGuard)
 @Controller('notes')
@@ -30,8 +33,12 @@ export class NoteController {
   ) {}
 
   @Post()
-  async create(@Body() createNoteDto: CreateNoteDto) {
-    return await this.createNoteUseCase.execute(createNoteDto);
+  @UseInterceptors(FileInterceptor('image'))
+  async create(
+    @Body() createNoteDto: CreateNoteDto,
+    @UploadedFile() file: any,
+  ) {
+    return await this.createNoteUseCase.execute(createNoteDto, file);
   }
 
   @Get()
