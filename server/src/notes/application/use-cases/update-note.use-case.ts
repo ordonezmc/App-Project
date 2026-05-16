@@ -2,6 +2,7 @@ import { UpdateNoteDto } from 'src/notes/infrastructure/dtos/update-note.dto';
 import { Note } from '../../domain/entities/note.entity';
 import { INoteRepository } from '../../domain/repositories/note.repository.interface';
 import { IImageStorageService } from 'src/shared/domain/repositories/image.repository.interface';
+import { NotFoundException } from '@nestjs/common';
 
 export class UpdateNoteUseCase {
   constructor(
@@ -9,9 +10,17 @@ export class UpdateNoteUseCase {
     private readonly fileStorage: IImageStorageService,
   ) {}
   async execute(id: string, data: UpdateNoteDto, file?: any): Promise<Note> {
+    const existingNote = await this.noteRepository.findById(id);
+    if (!existingNote) {
+      throw new NotFoundException('La bitácora no existe');
+    }
     let finalImageUrl = data.imagen_url || null;
 
     if (file) {
+      if (existingNote.imagen_url) {
+        await this.fileStorage.deleteImage(existingNote.imagen_url);
+      }
+
       finalImageUrl = await this.fileStorage.uploadImage(file);
     }
     const updatedNote: Partial<Note> = {
