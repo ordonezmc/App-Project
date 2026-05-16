@@ -9,7 +9,7 @@ export class CloudinaryStorageService implements IImageStorageService {
     cloudinary.config({
       cloud_name: process.env.CLOUD_NAME,
       api_key: process.env.CLOUDINARY_KEY,
-      api_secret: process.env.CLOUDINARY_SECRET, // Usa variables de entorno
+      api_secret: process.env.CLOUDINARY_SECRET,
     });
   }
 
@@ -25,5 +25,15 @@ export class CloudinaryStorageService implements IImageStorageService {
 
       upload.end(file.buffer);
     });
+  }
+
+  async deleteImage(url: string): Promise<void> {
+    const matches =
+      url.match(/\/v\d+\/(.+)\.[a-z]+$/i) ||
+      url.match(/\/upload\/(.+)\.[a-z]+$/i);
+    if (!matches || matches.length < 2) return;
+
+    const publicId = matches[1];
+    await cloudinary.uploader.destroy(publicId);
   }
 }
